@@ -1,0 +1,186 @@
+SQL Lesson 1: SELECT queries 101
+
+
+1. Find the title of each film
+SELECT title from film;
+
+2. Find the director of each film
+SELECT director FROM movies;
+
+3. Find the title and director of each film
+SELECT title, director FROM movies;
+
+4. Find the title and year of each film
+SELECT title,year FROM movies;
+
+5.Find all the information about each film
+SELECT * FROM movies;
+
+SQL Lesson 2: Queries with constraints (Pt. 1)
+
+1. Find the movie with a row id of 6
+SELECT title FROM movies
+WHERE id = 6;
+
+2.Find the movies released in the years between 2000 and 2010
+SELECT title FROM movies
+WHERE year BETWEEN 2000 AND 2010;
+
+3. Find the movies not released in the years between 2000 and 2010
+SELECT title FROM movies
+WHERE year NOT BETWEEN 2000 AND 2010;
+
+4. Find the first 5 Pixar movies and their release year
+SELECT title,year FROM movies
+ORDER BY year ASC
+LIMIT 5;
+
+SQL Lesson 3: Queries with constraints (Pt. 2)
+
+1. Find all the Toy Story movies
+SELECT * FROM movies
+WHERE title Like "Toy%";
+
+2. Find all the movies directed by John Lasseter
+SELECT * FROM movies
+WHERE director ='John Lasseter';
+
+3. Find all the movies (and director) not directed by John Lasseter
+SELECT * FROM movies
+WHERE director !='John Lasseter';
+
+4. Find all the WALL-* movies
+SELECT * FROM movies
+WHERE Title LIKE 'WALL-_';
+
+SQL Lesson 4: Filtering and sorting Query results
+
+1. List all directors of Pixar movies (alphabetically), without duplicates
+SELECT DISTINCT director FROM movies
+ORDER BY director ASC;
+
+2. List the last four Pixar movies released (ordered from most recent to least)
+SELECT * FROM movies
+ORDER BY year DESC
+LIMIT 4;
+
+3. List the first five Pixar movies sorted alphabetically
+SELECT * FROM movies
+ORDER BY title ASC
+LIMIT 5;
+
+4. List the next five Pixar movies sorted alphabetically
+SELECT * FROM movies
+ORDER BY title ASC
+LIMIT 5 OFFSET 5;
+
+SQL Lesson 6: Multi-table queries with JOINs
+
+1. Find the domestic and international sales for each movie
+SELECT m.title, b.domestic_sales, b.international_sales
+FROM movies m
+INNER JOIN boxoffice b
+ON m.id = b.movie_id;
+
+2. Show the sales numbers for each movie that did better internationally rather than domestically
+SELECT m.title, b.domestic_sales, b.international_sales
+FROM movies m
+INNER JOIN boxoffice b
+ON m.id = b.movie_id
+WHERE b.international_sales > b.domestic_sales;
+
+3. List all the movies by their ratings in descending order
+SELECT m.title, b.rating
+FROM movies m
+INNER JOIN boxoffice b
+ON m.id = b.movie_id
+ORDER BY b.rating DESC;
+
+SQL Lesson 7: OUTER JOINs
+
+1. Find the list of all buildings that have employees
+SELECT distinct b.building_name
+FROM buildings b 
+INNER JOIN employees e
+ON b.building_name = e.building;
+
+2. Find the list of all buildings and their capacity
+SELECT * FROM buildings;
+
+3. List all buildings and the distinct employee roles in each building (including empty buildings)
+SELECT DISTINCT building_name, role 
+FROM buildings 
+LEFT JOIN employees
+ON building_name = building;
+
+SQL Lesson 8: A short note on NULLs
+
+1. Find the name and role of all employees who have not been assigned to a building
+SELECT e.name, e.role
+FROM employees E
+LEFT JOIN buildings b
+ON e.building = b.building_name
+WHERE e.building IS NULL;
+
+2. Find the names of the buildings that hold no employees
+SELECT DISTINCT building_name
+FROM buildings 
+LEFT JOIN employees
+ON building_name = building
+WHERE role IS NULL;
+
+SQL Lesson 9: Queries with expressions
+
+1. List all movies and their combined sales in millions of dollars
+SELECT title, (domestic_sales + international_sales) / 1000000 AS combined_sales
+FROM movies
+JOIN boxoffice
+ON movies.id = boxoffice.movie_id;
+
+2. List all movies and their ratings in percent
+SELECT title, rating * 10 AS rating_percent
+FROM movies
+JOIN boxoffice
+ON movies.id = boxoffice.movie_id;
+
+3. List all movies that were released on even number years
+SELECT * FROM movies WHERE year%2 =0;
+
+SQL Lesson 10: Queries with aggregates (Pt. 1)
+
+1. Find the longest time that an employee has been at the studio
+SELECT * FROM employees
+ORDER BY years_employed DESC
+LIMIT 1;
+
+2. For each role, find the average number of years employed by employees in that role
+SELECT role, AVG(years_employed)
+FROM employees
+GROUP BY role;
+
+3. Find the total number of employee years worked in each building
+SELECT building, SUM(years_employed)
+FROM employees
+GROUP BY building;
+
+SQL Lesson 11: Queries with aggregates (Pt. 2)
+
+1. Find the number of Artists in the studio (without a HAVING clause)
+SELECT COUNT(role)
+FROM employees
+WHERE role = 'Artist';
+
+2. Find the number of Employees of each role in the studio
+SELECT role, COUNT(*)
+FROM employees
+GROUP BY role;
+
+3. Find the total number of years employed by all Engineers
+SELECT role,sum(years_employed)
+FROM employees
+WHERE role ='Engineer'
+GROUP BY role;
+
+
+
+
